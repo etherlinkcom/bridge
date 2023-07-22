@@ -1,0 +1,44 @@
+{
+  "name": "evm-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "prettier --check . && next lint",
+    "format": "prettier --write .",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@airgap/beacon-types": "^4.0.5",
+    "@emotion/react": "^11.11.1",
+    "@mantine/core": "^6.0.16",
+    "@mantine/form": "^6.0.16",
+    "@mantine/hooks": "^6.0.16",
+    "@mantine/notifications": "^6.0.16",
+    "@tabler/icons-react": "^2.24.0",
+    "@taquito/beacon-wallet": "^17.0.0",
+    "@taquito/taquito": "^17.0.0",
+    "@types/react": "18.2.14",
+    "@types/react-dom": "18.2.6",
+    "axios": "^1.4.0",
+    "eslint-config-next": "13.4.9",
+    "next": "13.4.9",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.1.6",
+    "web3-validator": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.1",
+    "@typescript-eslint/eslint-plugin": "^5.61.0",
+    "@typescript-eslint/parser": "^5.61.0",
+    "cypress": "^12.17.1",
+    "eslint": "^8.44.0",
+    "eslint-config-prettier": "^8.8.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.3",
+    "prettier": "^3.0.0"
+  }
+}

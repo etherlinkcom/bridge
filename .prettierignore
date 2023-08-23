@@ -7,3 +7,6 @@ coverage
 .eslintignore
 .env
 netlify.toml
+Dockerfile
+docker-compose.yml
+LICENSE

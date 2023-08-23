@@ -1,0 +1,9 @@
+node_modules
+.next
+.husky
+coverage
+.prettierignore
+.stylelintignore
+.eslintignore
+.env
+netlify.toml

@@ -39,5 +39,5 @@ export interface KukaiOptions {
 
 export type ConnectFn = (
   isNewConnection: boolean,
-  connectionOptions?: BeaconOptions,
+  connectionOptions?: BeaconOptions
 ) => Promise<WalletApi>;

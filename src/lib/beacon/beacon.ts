@@ -8,10 +8,7 @@
  * Modifications were made to the original file for integration into this project.
  * All modifications are licensed under: MIT
  */
-
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import { BeaconWallet } from '@taquito/beacon-wallet';
 import {
   ExtendedPeerInfo,
@@ -73,12 +70,10 @@ export const connectBeacon: ConnectFn = async (isNew) => {
     scopes: [PermissionScope.OPERATION_REQUEST],
   });
 
-  const connectionType = await getBeaconAppName(response, beaconWallet).catch(
-    () => {
-      console.error('problem getting beacon app name');
-      return 'Unkown';
-    },
-  );
+  const connectionType = await getBeaconAppName(response, beaconWallet).catch(() => {
+    console.error('problem getting beacon app name');
+    return 'Unkown';
+  });
   return {
     address: response.address,
     connection: {
@@ -94,7 +89,7 @@ export const connectBeacon: ConnectFn = async (isNew) => {
 
 const getBeaconAppName = async (
   response: PermissionResponseOutput,
-  beaconWallet: BeaconWallet,
+  beaconWallet: BeaconWallet
 ): Promise<string> => {
   const extensions = {
     gpfndedineagiepkpinficbcbbgjoenn: 'spire_chrome',
@@ -106,9 +101,7 @@ const getBeaconAppName = async (
   if (response.accountInfo.origin.type === 'extension') {
     appName =
       response.accountInfo.origin.id in extensions
-        ? extensions[
-            response.accountInfo.origin.id as 'gpfndedineagiepkpinficbcbbgjoenn'
-          ]
+        ? extensions[response.accountInfo.origin.id as 'gpfndedineagiepkpinficbcbbgjoenn']
         : 'Unknown';
   } else if (response.walletKey) {
     appName = response.walletKey;
@@ -118,9 +111,7 @@ const getBeaconAppName = async (
     if (response.appMetadata) {
       appName = response.appMetadata.name;
     } else {
-      const peer = peers.find(
-        (peer) => (peer as ExtendedPeerInfo).senderId === response.senderId,
-      );
+      const peer = peers.find((p) => (p as ExtendedPeerInfo).senderId === response.senderId);
       if (peer) {
         appName = peer.name;
       }
@@ -131,7 +122,7 @@ const getBeaconAppName = async (
 
 export const tezosToolkit = new TezosToolkit(
   // for payments: todo: add prod url
-  'https://rpc.ghostnet.teztnets.xyz/',
+  'https://rpc.ghostnet.teztnets.xyz/'
 );
 tezosToolkit.setPackerProvider(new MichelCodecPacker());
 
@@ -162,5 +153,5 @@ export const callContractBeaconFn =
     transfer.amount = amountMutez;
     const walletCmd = tezosToolkit.wallet.transfer(transfer);
     await walletCmd.send();
-    return await Promise.resolve('');
+    return Promise.resolve('');
   };

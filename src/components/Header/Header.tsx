@@ -1,20 +1,14 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-'use client';
-
 import {
   createStyles,
   Header as MantineHeader,
   Menu,
   Group,
-  Center,
-  Burger,
   Container,
   Text,
   ActionIcon,
   rem,
   Button,
   useMantineColorScheme,
-  Tooltip,
 } from '@mantine/core';
 import {
   IconSun,
@@ -24,10 +18,10 @@ import {
   IconSwitchHorizontal,
 } from '@tabler/icons-react';
 
-import { useConnection } from '@/contexts/TezosWalletContext';
-import { TezosIcon } from '@/icons/Tezos';
-import { WalletButton } from '@/components/WalletButton';
-import { shortAddress } from '@/lib/utils';
+import { useConnection } from '@/contexts/TezosContext/TezosContext';
+import { TezosIcon } from '@/icons/TezosIcon/TezosIcon';
+import { WalletButton } from '@/components/WalletButton/WalletButton';
+import { shortAddress } from '@/lib/utils/utils';
 
 const useStyles = createStyles((theme) => ({
   inner: {
@@ -55,18 +49,12 @@ const useStyles = createStyles((theme) => ({
     padding: `${rem(8)} ${rem(12)}`,
     borderRadius: theme.radius.sm,
     textDecoration: 'none',
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark[0]
-        : theme.colors.gray[7],
+    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
     '&:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark[6]
-          : theme.colors.gray[0],
+      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
     },
   },
 
@@ -86,29 +74,26 @@ export function Header() {
       <Container>
         <div className={classes.inner}>
           <Text fw={700}>Tezos EVM Bridge</Text>
-          <Group position='center' my='xl'>
+          <Group position="center" my="xl">
             {address && address.length ? (
-              <Menu shadow='md' width={200}>
+              <Menu shadow="md" width={200}>
                 <Menu.Target>
                   <Button
-                    variant='default'
-                    color='gray'
-                    radius='xl'
+                    variant="default"
+                    color="gray"
+                    radius="xl"
                     leftIcon={<TezosIcon />}
-                    rightIcon={<IconChevronDown size='1.2rem' />}
+                    rightIcon={<IconChevronDown size="1.2rem" />}
                   >
                     {shortAddress(address)}
                   </Button>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item
-                    icon={<IconSwitchHorizontal size={14} />}
-                    onClick={connect}
-                  >
+                  <Menu.Item icon={<IconSwitchHorizontal size={14} />} onClick={connect}>
                     Switch Account
                   </Menu.Item>
                   <Menu.Item
-                    color='red'
+                    color="red"
                     icon={<IconPlugConnectedX size={14} />}
                     onClick={disconnect}
                   >
@@ -117,34 +102,21 @@ export function Header() {
                 </Menu.Dropdown>
               </Menu>
             ) : (
-              <WalletButton
-                radius='xl'
-                leftIcon={<TezosIcon />}
-                onClick={connect}
-              >
+              <WalletButton radius="xl" leftIcon={<TezosIcon />} onClick={connect}>
                 Connect
               </WalletButton>
             )}
             <ActionIcon
               onClick={() => toggleColorScheme()}
-              size='lg'
-              radius='xl'
+              size="lg"
+              radius="xl"
               sx={(theme) => ({
                 backgroundColor:
-                  theme.colorScheme === 'dark'
-                    ? theme.colors.dark[6]
-                    : theme.colors.gray[0],
-                color:
-                  theme.colorScheme === 'dark'
-                    ? theme.colors.yellow[4]
-                    : theme.colors.blue[6],
+                  theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+                color: theme.colorScheme === 'dark' ? theme.colors.yellow[4] : theme.colors.blue[6],
               })}
             >
-              {colorScheme === 'dark' ? (
-                <IconSun size='1.2rem' />
-              ) : (
-                <IconMoonStars size='1.2rem' />
-              )}
+              {colorScheme === 'dark' ? <IconSun size="1.2rem" /> : <IconMoonStars size="1.2rem" />}
             </ActionIcon>
           </Group>
         </div>

@@ -1,26 +1,26 @@
-/* eslint-env node */
 module.exports = {
-  root: true,
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  extends: ['eslint:recommended', 'next/core-web-vitals', 'prettier'],
+  extends: [
+    'mantine',
+    'plugin:@next/next/recommended',
+    'plugin:jest/recommended',
+    'plugin:storybook/recommended'
+  ],
+  plugins: ['testing-library', 'jest'],
   overrides: [
     {
-      files: ['*.ts', '*.tsx'],
-      parserOptions: {
-        project: ['./tsconfig.json'],
-        tsconfigRootDir: __dirname,
-      },
-      extends: [
-        'plugin:@typescript-eslint/recommended',
-        'plugin:@typescript-eslint/recommended-requiring-type-checking',
-
-        //declaring 'next/core-web-vitals' and 'prettier' again in case
-        //the two plugin:... configs above overrode any of their rules
-        //Also, 'prettier' needs to be last in any extends array
-        'next/core-web-vitals',
-        'prettier',
-      ],
+      files: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+      extends: ['plugin:testing-library/react'],
     },
   ],
+  parserOptions: {
+    project: './tsconfig.json',
+  },
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      typescript: {}
+    },
+  },
 };

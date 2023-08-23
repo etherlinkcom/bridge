@@ -45,11 +45,11 @@ export function Footer() {
   const { classes } = useStyles();
   const items = links.map((link) => (
     <Anchor<'a'>
-      color='dimmed'
+      color="dimmed"
       key={link.label}
       href={link.link}
       onClick={(event) => event.preventDefault()}
-      size='sm'
+      size="sm"
     >
       {link.label}
     </Anchor>

@@ -14,8 +14,8 @@
 // and we should simply handle it here
 import { Context, createContext, useContext, useEffect, useState } from 'react';
 // import { useCookies } from 'react-cookie'
-import { connectBeacon } from '@/lib/beacon';
-import { WalletApi, WalletConnection } from '@/lib/beacon-types';
+import { connectBeacon } from '@/lib/beacon/beacon';
+import { WalletApi } from '@/lib/beacon/beacon-types';
 
 interface ConnectionContextType extends Partial<WalletApi> {
   connect: () => Promise<void>;
@@ -28,16 +28,16 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
 
   const [wallet, setWallet] = useState<WalletApi | undefined>();
 
-  const setWalletCookie = (address: string | undefined) => {
-    // setCookies('viewer-address', address, {
-    //   path: '/',
-    //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10)
-    // })
-  };
+  // const setWalletCookie = (_: string | undefined) => {
+  //   // setCookies('viewer-address', address, {
+  //   //   path: '/',
+  //   //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10)
+  //   // })
+  // };
 
-  useEffect(() => {
-    setWalletCookie(wallet?.address);
-  }, [wallet?.address]);
+  // useEffect(() => {
+  //   // setWalletCookie(wallet?.address);
+  // }, [wallet?.address]);
 
   useEffect(() => {
     connectBeacon(false)
@@ -47,11 +47,8 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
       });
   }, []);
 
-  const onInitialConnectionComplete = async (
-    wallet: WalletApi,
-    // eslint-disable-next-line @typescript-eslint/require-await
-  ): Promise<void> => {
-    setWallet(wallet);
+  const onInitialConnectionComplete = async (walletApi: WalletApi): Promise<void> => {
+    setWallet(walletApi);
     // const { address, connection } = wallet;
     // return connection;
   };
@@ -60,22 +57,19 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
   const disconnect = async function () {
     console.log('disconnecting');
     setWallet(undefined);
-    setWalletCookie(undefined);
+    // setWalletCookie(undefined);
   };
 
   return (
     <ConnectionContext.Provider
       value={{
-        connect: async () => {
-          return await connectBeacon(true)
+        connect: async () =>
+          connectBeacon(true)
             .then(onInitialConnectionComplete)
             .catch(() => {
-              void disconnect();
-              throw new Error(
-                'Error connecting to wallet, please try again later',
-              );
-            });
-        },
+              disconnect();
+              throw new Error('Error connecting to wallet, please try again later');
+            }),
         ...wallet,
         disconnect: async () => {
           await disconnect();
@@ -96,7 +90,5 @@ export type NotNothing<T> = T extends null | undefined ? never : T;
  */
 export const useConnection = (): ConnectionContextType => {
   if (!ConnectionContext) throw new Error('WalletContext not initialized');
-  return useContext(
-    ConnectionContext as NotNothing<Context<ConnectionContextType>>,
-  );
+  return useContext(ConnectionContext as NotNothing<Context<ConnectionContextType>>);
 };

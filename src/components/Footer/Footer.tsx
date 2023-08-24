@@ -19,8 +19,8 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: theme.spacing.xl,
-    paddingBottom: theme.spacing.xl,
+    paddingTop: theme.spacing.md,
+    paddingBottom: theme.spacing.md,
 
     [theme.fn.smallerThan('xs')]: {
       flexDirection: 'column',
@@ -36,19 +36,24 @@ const useStyles = createStyles((theme) => ({
 
 const links = [
   {
-    link: '#',
-    label: 'Contact',
+    link: 'https://explorer.ghostnet-evm.tzalpha.net/',
+    label: 'EVM Explorer',
+  },
+  {
+    link: 'https://tezos.gitlab.io/alpha/smart_rollups.html',
+    label: 'Smart Optimistic Rollups Documentation',
   },
 ];
 
 export function Footer() {
   const { classes } = useStyles();
   const items = links.map((link) => (
-    <Anchor<'a'>
+    <Anchor
       color="dimmed"
       key={link.label}
       href={link.link}
-      onClick={(event) => event.preventDefault()}
+      target="_blank"
+      // onClick={(event) => event.preventDefault()}
       size="sm"
     >
       {link.label}
@@ -56,9 +61,9 @@ export function Footer() {
   ));
 
   return (
-    <MantineFooter height={60} className={classes.footer}>
+    <MantineFooter height={60}>
       <Container className={classes.inner}>
-        <Group className={classes.links}>{items}</Group>
+        <Group>{items}</Group>
       </Container>
     </MantineFooter>
   );

@@ -14,6 +14,7 @@
 // and we should simply handle it here
 import { Context, createContext, useContext, useEffect, useState } from 'react';
 // import { useCookies } from 'react-cookie'
+import { setCookie } from 'cookies-next';
 import { connectBeacon } from '@/lib/beacon/beacon';
 import { WalletApi } from '@/lib/beacon/beacon-types';
 
@@ -28,16 +29,15 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
 
   const [wallet, setWallet] = useState<WalletApi | undefined>();
 
-  // const setWalletCookie = (_: string | undefined) => {
-  //   // setCookies('viewer-address', address, {
-  //   //   path: '/',
-  //   //   expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365 * 10)
-  //   // })
-  // };
+  const setWalletCookie = (address: string | undefined) => {
+    setCookie('viewer-address', address, {
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  };
 
-  // useEffect(() => {
-  //   // setWalletCookie(wallet?.address);
-  // }, [wallet?.address]);
+  useEffect(() => {
+    setWalletCookie(wallet?.address);
+  }, [wallet?.address]);
 
   useEffect(() => {
     connectBeacon(false)
@@ -57,7 +57,7 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
   const disconnect = async function () {
     console.log('disconnecting');
     setWallet(undefined);
-    // setWalletCookie(undefined);
+    setWalletCookie(undefined);
   };
 
   return (

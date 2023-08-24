@@ -6,8 +6,5 @@ services:
     command: ["yarn", "start"]
     ports:
       - 3000:3000
-    volumes:
-      - ./webapp:/usr/src/app
-      - /usr/src/app/node_modules
     env_file:
       .env

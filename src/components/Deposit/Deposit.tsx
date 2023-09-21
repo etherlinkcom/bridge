@@ -20,7 +20,7 @@ export function Deposit() {
     },
 
     validate: {
-      ethAddress: (val) => (isEthAddress(val) ? null : 'Invalid Ethereum address'),
+      ethAddress: (val) => (isEthAddress(val) ? null : 'Invalid Etherlink address'),
       amount: (val) => (val > 0 ? null : 'Invalid amount: must be greater than 0'),
     },
   });
@@ -76,9 +76,6 @@ export function Deposit() {
 
   return (
     <Paper radius="md" p="xl" withBorder>
-      <Text size="lg" weight={500} my="xl" fw="700">
-        Enter your Ethereum address and the amount of tokens you want to move to
-      </Text>
 
       <form
         onSubmit={form.onSubmit((values) => {
@@ -90,7 +87,7 @@ export function Deposit() {
         <Stack>
           <TextInput
             required
-            label="Ethereum Address"
+            label="Etherlink Address"
             placeholder="0x0260bF7..."
             // value={form.values.ethAddress}
             // onChange={(event) =>
@@ -133,7 +130,7 @@ export function Deposit() {
         <Stack>
           {address && address.length ? (
             <Button type="submit" radius="xl" size="lg">
-              Move funds to EVM Rollup
+              Move funds to Etherlink
             </Button>
           ) : (
             <Button radius="xl" size="lg" disabled>

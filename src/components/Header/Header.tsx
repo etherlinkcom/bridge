@@ -73,7 +73,7 @@ export function Header() {
     <MantineHeader height={56} mb={120}>
       <Container>
         <div className={classes.inner}>
-          <Text fw={700}>Tezos EVM Bridge</Text>
+          <Text fw={700}>Etherlink Bridge</Text>
           <Group position="center" my="xl">
             {address && address.length ? (
               <Menu shadow="md" width={200}>

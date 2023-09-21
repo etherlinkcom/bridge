@@ -37,7 +37,7 @@ const useStyles = createStyles((theme) => ({
 const links = [
   {
     link: 'https://explorer.ghostnet-evm.tzalpha.net/',
-    label: 'EVM Explorer',
+    label: 'Explorer',
   },
   {
     link: 'https://tezos.gitlab.io/alpha/smart_rollups.html',

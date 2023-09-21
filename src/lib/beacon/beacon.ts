@@ -24,7 +24,7 @@ const createBeaconWallet = (): BeaconWallet | undefined =>
   typeof window === 'undefined'
     ? undefined
     : new BeaconWallet({
-        name: 'Tezos EVM Bridge',
+        name: 'Etherlink Bridge',
         appUrl: 'localhost:3000',
         preferredNetwork: NetworkType.GHOSTNET,
         // walletConnectOptions: {

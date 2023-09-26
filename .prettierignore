@@ -10,3 +10,4 @@ netlify.toml
 Dockerfile
 docker-compose.yml
 LICENSE
+yarn.lock

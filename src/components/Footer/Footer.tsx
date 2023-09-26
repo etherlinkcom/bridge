@@ -5,7 +5,9 @@ import {
   Group,
   Anchor,
   rem,
+  ActionIcon,
 } from '@mantine/core';
+import { IconBrandGitlab } from '@tabler/icons-react';
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -36,12 +38,19 @@ const useStyles = createStyles((theme) => ({
 
 const links = [
   {
-    link: 'https://explorer.ghostnet-evm.tzalpha.net/',
+    link: process.env.NEXT_PUBLIC_EXPLORER_URL,
     label: 'Explorer',
   },
   {
-    link: 'https://tezos.gitlab.io/alpha/smart_rollups.html',
+    link: process.env.NEXT_PUBLIC_SORU_DOC_URL,
     label: 'Smart Optimistic Rollups Documentation',
+  },
+];
+
+const linksLeft = [
+  {
+    link: process.env.NEXT_PUBLIC_GIT_URL,
+    icon: IconBrandGitlab,
   },
 ];
 
@@ -60,10 +69,29 @@ export function Footer() {
     </Anchor>
   ));
 
+  const itemsRight = linksLeft.map((link) => (
+    <ActionIcon
+      key={link.link}
+      component="a"
+      href={link.link}
+      target="_blank"
+      size="md"
+      aria-label="Open in a new tab"
+      color="nl-blue"
+      radius="xl"
+      variant="light"
+    >
+      <link.icon style={{ width: '70%', height: '70%' }} stroke={1.5} />
+    </ActionIcon>
+  ));
+
   return (
     <MantineFooter height={60}>
       <Container className={classes.inner}>
+        {/* <Group position="apart" grow> */}
         <Group>{items}</Group>
+        <Group>{itemsRight}</Group>
+        {/* </Group> */}
       </Container>
     </MantineFooter>
   );

@@ -8,7 +8,6 @@ import { Notifications } from '@mantine/notifications';
 import { ConnectionProvider } from '@/contexts/TezosContext/TezosContext';
 
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { Component, pageProps } = props;
   const [colorScheme, setColorScheme] = useState<ColorScheme>(props.colorScheme);
 
@@ -27,7 +26,30 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
       </Head>
 
       <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
+        <MantineProvider
+          theme={{
+            fontFamily: 'Raleway, sans-serif',
+            fontFamilyMonospace: 'Monaco, Courier, monospace',
+            colors: {
+              'nl-blue': [
+                '#e5f5ff',
+                '#cee5ff',
+                '#9cc9ff',
+                '#66abfe',
+                '#3c92fc',
+                '#2382fc',
+                '#137afe',
+                '#0068e3',
+                '#005ccb',
+                '#004fb4',
+              ],
+            },
+            primaryColor: 'nl-blue',
+            colorScheme,
+          }}
+          withGlobalStyles
+          withNormalizeCSS
+        >
           <ConnectionProvider>
             <Component {...pageProps} />
             <Notifications />

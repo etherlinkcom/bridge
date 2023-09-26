@@ -15,19 +15,22 @@
 import { Context, createContext, useContext, useEffect, useState } from 'react';
 // import { useCookies } from 'react-cookie'
 import { setCookie } from 'cookies-next';
+import { NetworkType } from '@airgap/beacon-types';
+
 import { connectBeacon } from '@/lib/beacon/beacon';
 import { WalletApi } from '@/lib/beacon/beacon-types';
 
 interface ConnectionContextType extends Partial<WalletApi> {
   connect: () => Promise<void>;
+  network: string;
+  setNetwork: (network: NetworkType) => void;
 }
 
 const ConnectionContext = createContext<ConnectionContextType | null>(null);
 
 export const ConnectionProvider = ({ children }: { children: any }) => {
-  // const setCookies = useCookies(['viewer-address'])[1]
-
   const [wallet, setWallet] = useState<WalletApi | undefined>();
+  const [network, setNetwork] = useState<NetworkType>(NetworkType.GHOSTNET);
 
   const setWalletCookie = (address: string | undefined) => {
     setCookie('viewer-address', address, {
@@ -40,7 +43,7 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
   }, [wallet?.address]);
 
   useEffect(() => {
-    connectBeacon(false)
+    connectBeacon(false, network)
       .then(setWallet)
       .catch(() => {
         console.log('no existing beacon connection');
@@ -64,16 +67,28 @@ export const ConnectionProvider = ({ children }: { children: any }) => {
     <ConnectionContext.Provider
       value={{
         connect: async () =>
-          connectBeacon(true)
+          connectBeacon(true, network)
             .then(onInitialConnectionComplete)
-            .catch(() => {
+            .catch((err) => {
               disconnect();
-              throw new Error('Error connecting to wallet, please try again later');
+              throw new Error(`Error connecting to wallet, please try again later ${err.message}`);
             }),
         ...wallet,
         disconnect: async () => {
           await disconnect();
           await wallet?.disconnect();
+        },
+        network,
+        setNetwork: async (newNetwork: NetworkType) => {
+          setNetwork(newNetwork);
+          await disconnect();
+          await wallet?.disconnect();
+          connectBeacon(true, newNetwork)
+            .then(onInitialConnectionComplete)
+            .catch(() => {
+              disconnect();
+              throw new Error('Error connecting to wallet, please try again later');
+            });
         },
       }}
     >

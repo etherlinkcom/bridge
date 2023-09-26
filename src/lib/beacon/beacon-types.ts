@@ -9,6 +9,8 @@
  * All modifications are licensed under: MIT
  */
 
+import { NetworkType } from '@airgap/beacon-types';
+
 export interface WalletConnection {
   imageUrl?: string;
   connectionType?: string;
@@ -25,7 +27,7 @@ export interface ContractCallDetails {
 }
 
 export interface WalletApi {
-  callcontract: (details: ContractCallDetails) => Promise<string | undefined>;
+  // callcontract: (details: ContractCallDetails) => Promise<string | undefined>;
   address: string;
   connection: WalletConnection;
   disconnect: () => Promise<void>;
@@ -39,5 +41,6 @@ export interface KukaiOptions {
 
 export type ConnectFn = (
   isNewConnection: boolean,
+  network: NetworkType,
   connectionOptions?: BeaconOptions
 ) => Promise<WalletApi>;

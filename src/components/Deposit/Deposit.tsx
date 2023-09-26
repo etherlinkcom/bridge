@@ -1,18 +1,28 @@
-import { TextInput, NumberInput, Text, Paper, Button, Divider, Anchor, Stack } from '@mantine/core';
-import { useToggle } from '@mantine/hooks';
+import {
+  TextInput,
+  NumberInput,
+  Text,
+  Button,
+  Divider,
+  Anchor,
+  Stack,
+  Box,
+  Alert,
+  Grid,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { isAddress as isEthAddress } from 'web3-validator';
-import { OpKind } from '@taquito/taquito';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { IconCheck, IconX, IconInfoCircle, IconExternalLink } from '@tabler/icons-react';
 
 import { tezosToolkit as Tezos } from '@/lib/beacon/beacon';
-import { mutezToTez } from '@/lib/utils/utils';
+import { tezToMutez } from '@/lib/utils/utils';
+import { EvmBridgeWalletType } from '@/lib/types/evm_bridge.types';
+import { tas } from '@/lib/types/type-aliases';
 import { useConnection } from '@/contexts/TezosContext/TezosContext';
 
 export function Deposit() {
   const { address } = useConnection();
-  const [type, toggle] = useToggle(['input', 'wallet']);
   const form = useForm({
     initialValues: {
       ethAddress: '',
@@ -26,39 +36,28 @@ export function Deposit() {
   });
 
   const deposit = async (ethAddress: string, amount: number) => {
-    const ctezContractAddress = process.env.NEXT_PUBLIC_CTEZ_CONTRACT_ADDRESS;
-    const bridgeContractAddress = process.env.NEXT_PUBLIC_BRIDGE_CONTRACT_ADDRESS;
+    const bridgeContractAddress = process.env.NEXT_PUBLIC_BRIDGE_ADDRESS;
+    const rollupContractAddress = process.env.NEXT_PUBLIC_ROLLUP_ADDRESS;
+    const amountTez = tezToMutez(amount);
 
     try {
-      if (!ctezContractAddress || !bridgeContractAddress) {
-        throw new Error('Missing contract address');
+      if (!bridgeContractAddress || !rollupContractAddress) {
+        throw new Error('Missing contract or rollup address');
       }
 
-      const ctezContract = await Tezos.wallet.at(ctezContractAddress);
-      const bridgeContract = await Tezos.wallet.at(bridgeContractAddress);
+      const bridgeContract = await Tezos.wallet.at<EvmBridgeWalletType>(bridgeContractAddress);
 
-      const txs = [
-        {
-          kind: OpKind.TRANSACTION as OpKind.TRANSACTION,
-          ...ctezContract.methods
-            .approve(bridgeContractAddress, mutezToTez(amount))
-            .toTransferParams(),
-        },
-        {
-          kind: OpKind.TRANSACTION as OpKind.TRANSACTION,
+      const tx = bridgeContract.methods.deposit(
+        tas.bytes(rollupContractAddress),
+        tas.address(ethAddress)
+      );
 
-          ...bridgeContract.methods
-            .deposit(mutezToTez(amount), ethAddress, 21000)
-            .toTransferParams(),
-        },
-      ];
-
-      const operation = await Tezos.wallet.batch(txs).send();
+      const operation = await tx.send({ amount: amountTez, mutez: true });
       await operation.confirmation(2);
 
       notifications.show({
         title: 'Deposit successful',
-        message: `You have successfully deposited ${amount} ctez.`,
+        message: `You have successfully deposited ${amountTez} ctez.`,
         icon: <IconCheck size="1.1rem" />,
         color: 'teal',
       });
@@ -75,7 +74,16 @@ export function Deposit() {
   };
 
   return (
-    <Paper radius="md" p="xl" withBorder>
+    <Box>
+      <Alert variant="light" my="sm" py="lg" icon={<IconInfoCircle />} title="Important">
+        <Text size="sm">
+          This is a testnet. You can request free Ghostnet ꜩ from
+          <Anchor href="https://faucet.ghostnet.teztnets.xyz" target="_blank">
+            {' '}
+            the faucet. <IconExternalLink size="0.8rem" />
+          </Anchor>
+        </Text>
+      </Alert>
 
       <form
         onSubmit={form.onSubmit((values) => {
@@ -85,41 +93,38 @@ export function Deposit() {
         })}
       >
         <Stack>
-          <TextInput
-            required
-            label="Etherlink Address"
-            placeholder="0x0260bF7..."
-            // value={form.values.ethAddress}
-            // onChange={(event) =>
-            //   form.setFieldValue('ethAddress', event.currentTarget.value)
-            // }
-            error={form.errors.ethAddress}
-            radius="md"
-            size="lg"
-            inputWrapperOrder={['label', 'input', 'error', 'description']}
-            descriptionProps={{ position: 'absolute', right: 0 }}
-            description={
-              <Anchor
-                component="button"
-                type="button"
-                color="dimmed"
-                onClick={() => toggle()}
-                size="xs"
-                disabled
-              >
-                {type === 'input' ? 'Fill in with wallet (soon...)' : 'Fill in with input'}
-              </Anchor>
-            }
-            {...form.getInputProps('ethAddress')}
-          />
+          <Grid justify="center" align="center">
+            <Grid.Col>
+              <TextInput
+                label="Etherlink Address"
+                placeholder="0x0000000000000000000000000000000000000000"
+                // value={form.values.ethAddress}
+                // onChange={(event) =>
+                //   form.setFieldValue('ethAddress', event.currentTarget.value)
+                // }
+                variant="unstyled"
+                error={form.errors.ethAddress}
+                radius="xs"
+                size="lg"
+                inputWrapperOrder={['label', 'input', 'error']}
+                {...form.getInputProps('ethAddress')}
+              />
+            </Grid.Col>
+            {/* <Grid.Col span={3}>
+              <Button variant="default" color="gray" radius="xl" size="sm" leftIcon={<EthIcon />}>
+                Fill in with EVM wallet
+              </Button>
+
+            </Grid.Col> */}
+          </Grid>
 
           <NumberInput
-            required
             label="Amount"
             placeholder="10"
             error={form.errors.amount}
             radius="md"
             size="lg"
+            variant="unstyled"
             hideControls
             {...form.getInputProps('amount')}
           />
@@ -129,16 +134,16 @@ export function Deposit() {
 
         <Stack>
           {address && address.length ? (
-            <Button type="submit" radius="xl" size="lg">
+            <Button variant="light" radius="xl" size="lg" type="submit">
               Move funds to Etherlink
             </Button>
           ) : (
             <Button radius="xl" size="lg" disabled>
-              Login before moving funds
+              Connect your wallet before moving funds
             </Button>
           )}
         </Stack>
       </form>
-    </Paper>
+    </Box>
   );
 }

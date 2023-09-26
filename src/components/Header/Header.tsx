@@ -9,6 +9,7 @@ import {
   rem,
   Button,
   useMantineColorScheme,
+  Badge,
 } from '@mantine/core';
 import {
   IconSun,
@@ -16,7 +17,9 @@ import {
   IconPlugConnectedX,
   IconChevronDown,
   IconSwitchHorizontal,
+  IconNetwork,
 } from '@tabler/icons-react';
+import { NetworkType } from '@airgap/beacon-types';
 
 import { useConnection } from '@/contexts/TezosContext/TezosContext';
 import { TezosIcon } from '@/icons/TezosIcon/TezosIcon';
@@ -64,17 +67,35 @@ const useStyles = createStyles((theme) => ({
 }));
 
 export function Header() {
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const { classes } = useStyles();
-  const { address, connect, disconnect } = useConnection();
+  const { address, connect, disconnect, network } = useConnection();
 
   return (
     <MantineHeader height={56} mb={120}>
       <Container>
         <div className={classes.inner}>
-          <Text fw={700}>Etherlink Bridge</Text>
+          <Group>
+            <Text fw={700}>Etherlink Bridge</Text>
+            <Badge variant="outline" color="red">
+              {network === NetworkType.MAINNET ? 'Mainnet' : 'Testnet'}
+            </Badge>
+          </Group>
           <Group position="center" my="xl">
+            <Menu>
+              <Menu.Target>
+                <Button
+                  variant="default"
+                  color="gray"
+                  radius="xl"
+                  leftIcon={<IconNetwork style={{ width: '80%', height: '80%' }} />}
+                  rightIcon={<IconChevronDown size="1.2rem" />}
+                  disabled
+                >
+                  Ghostnet
+                </Button>
+              </Menu.Target>
+            </Menu>
             {address && address.length ? (
               <Menu shadow="md" width={200}>
                 <Menu.Target>

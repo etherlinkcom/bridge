@@ -15,11 +15,6 @@ import { PermissionScope, NetworkType } from '@airgap/beacon-types';
 import { MichelCodecPacker, TezosToolkit } from '@taquito/taquito';
 import { ConnectFn } from './beacon-types';
 
-// const NETWORK_RPC: { [key in string]: string } = {
-//   [NetworkType.GHOSTNET]: 'https://rpc.ghostnet.teztnets.xyz',
-//   [NetworkType.DAILYNET]: 'https://rpc.dailynet-2023-09-21.teztnets.xyz',
-// };
-
 const createBeaconWallet = (network: NetworkType): BeaconWallet | undefined =>
   typeof window === 'undefined'
     ? undefined
@@ -27,7 +22,7 @@ const createBeaconWallet = (network: NetworkType): BeaconWallet | undefined =>
         name: 'Etherlink Bridge',
         network: {
           type: network,
-          rpcUrl: 'https://rpc.ghostnet.teztnets.xyz',
+          rpcUrl: 'https://rpc.ghostnet.teztnets.com',
         },
         // featuredWallets: ['kukai', 'trust', 'temple', 'umami'],
       });
@@ -84,6 +79,6 @@ export const connectBeacon: ConnectFn = async (isNew, network) => {
 };
 
 export const tezosToolkit = new TezosToolkit(
-  process.env.NEXT_PUBLIC_NODE_URL || 'https://rpc.ghostnet.teztnets.xyz'
+  process.env.NEXT_PUBLIC_NODE_URL || 'https://rpc.ghostnet.teztnets.com'
 );
 tezosToolkit.setPackerProvider(new MichelCodecPacker());

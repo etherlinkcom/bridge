@@ -78,7 +78,7 @@ export function Deposit() {
       <Alert variant="light" my="sm" py="lg" icon={<IconInfoCircle />} title="Important">
         <Text size="sm">
           This is a testnet. You can request free Ghostnet ꜩ from
-          <Anchor href="https://faucet.ghostnet.teztnets.xyz" target="_blank">
+          <Anchor href="https://faucet.ghostnet.teztnets.com" target="_blank">
             {' '}
             the faucet. <IconExternalLink size="0.8rem" />
           </Anchor>
